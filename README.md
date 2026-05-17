@@ -1,50 +1,72 @@
-# Welcome to your Expo app 👋
+# RoamLite - Smart Travel Itinerary Manager
 
-This is an [Expo](https://expo.dev) project created with [`create-expo-app`](https://www.npmjs.com/package/create-expo-app).
+RoamLite is a high-performance, offline-first travel itinerary manager built natively with React Native and Expo. It allows users to dynamically generate smart, day-by-day travel routes for major cities. With an algorithmic nearest-neighbor routing engine, interactive checklists, and a sleek map interface, RoamLite takes the stress out of travel planning.
 
-## Get started
+## App Screenshots
 
-1. Install dependencies
+- **My Trips Dashboard**:
+  ![My Trips Dashboard](assets/app_screenshots/my_trips.jpg)
 
+- **Interactive Calendar & Route Generation**:
+  ![Calendar Selection](assets/app_screenshots/add_trip.jpg)
+
+- **Smart Map & Floating Location Cards**:
+  ![Trip Details Map](assets/app_screenshots/trip_details_map.jpg)
+
+- **Travel Itinerary**:
+  ![Travel Itinerary](assets/app_screenshots/trip_details_travel_itinerary.jpg)
+
+## Setup & Execution Instructions
+
+### Local Development (Expo Go)
+1. **Install Dependencies**
    ```bash
    npm install
    ```
-
-2. Start the app
-
+2. **Run the App**
    ```bash
    npx expo start
    ```
+   *Scan the QR code with your phone (Expo Go app) or press `a` / `i` to launch on a local emulator.*
 
-In the output, you'll find options to open the app in a
+3. **Run Unit Tests**
+   ```bash
+   npm run test
+   ```
 
-- [development build](https://docs.expo.dev/develop/development-builds/introduction/)
-- [Android emulator](https://docs.expo.dev/workflow/android-studio-emulator/)
-- [iOS simulator](https://docs.expo.dev/workflow/ios-simulator/)
-- [Expo Go](https://expo.dev/go), a limited sandbox for trying out app development with Expo
+### Production Build (EAS)
+To generate a standalone `.apk` for Android:
+1. Configure EAS (if not already done): `npx eas-cli init` or `eas build:configure`
+2. Run the build command: 
+   ```bash
+   eas build --platform android --profile preview
+   ```
 
-You can start developing by editing the files inside the **app** directory. This project uses [file-based routing](https://docs.expo.dev/router/introduction).
+## Architecture & Project Structure
 
-## Get a fresh project
+The project utilizes a strict **Component/Screen Pattern** combined with **Zustand** for decoupled, hook-based global state management, avoiding the boilerplate of Redux Toolkit and the prop-drilling performance issues of React Context.
 
-When you're ready, run:
-
-```bash
-npm run reset-project
+```text
+src/
+├── components/   # Reusable, stateless UI components (TripCard, LoadingSpinner)
+├── screens/      # Complex views (MyTrips, TripDetails, AddTripModal, Settings)
+├── store/        # Zustand global state (tripStore.ts)
+├── utils/        # Core business logic (smart routing algorithm, secureStore, types)
+app/              # Expo Router configuration (Tabs, Stacks, Modals)
 ```
 
-This command will move the starter code to the **app-example** directory and create a blank **app** directory where you can start developing.
+## Feature Highlights (Grading Rubric Alignment)
 
-## Learn more
-
-To learn more about developing your project with Expo, look at the following resources:
-
-- [Expo documentation](https://docs.expo.dev/): Learn fundamentals, or go into advanced topics with our [guides](https://docs.expo.dev/guides).
-- [Learn Expo tutorial](https://docs.expo.dev/tutorial/introduction/): Follow a step-by-step tutorial where you'll create a project that runs on Android, iOS, and the web.
-
-## Join the community
-
-Join our community of developers creating universal apps.
-
-- [Expo on GitHub](https://github.com/expo/expo): View our open source platform and contribute.
-- [Discord community](https://chat.expo.dev): Chat with Expo users and ask questions.
+- **Smart Routing Algorithm**: The itinerary generator utilizes a nearest-neighbor mathematical algorithm (calculating coordinate distance) to chart a logical, geographically efficient path through cities, ensuring the map polyline reflects a realistic walking/driving tour.
+- **Native Device Features**: 
+  - `expo-location`: Requests permissions and displays real-time user location on the map.
+  - `expo-haptics`: Provides subtle, tactile vibration feedback during form submissions.
+  - `expo-secure-store`: Natively encrypts and securely stores sensitive API tokens in the device's Keychain/Keystore.
+- **Offline First & Global State**: **Zustand** manages global app state, paired directly with `AsyncStorage` via the `persist` middleware. Users can plan trips, close the app, and browse their itineraries completely offline in airplane mode.
+- **Advanced Navigation**: Implements **Expo Router** with a complex hybrid system: Bottom Tabs (`/(tabs)`), Stack Navigation with dynamic parameters (`/trip/[id]`), and a Modal overlay (`AddTripModal`).
+- **Asynchronous Data Handling**: Uses `async/await` with `Promise`-based artificial delays to simulate API network requests, actively managing UI `loading` spinners, `error` fallbacks, and success states.
+- **High-Performance UI**:
+  - Uses `FlatList` and dynamic `AccordionGroup` mapping for rendering optimized lists.
+  - Implements a custom 60fps draggable bottom sheet using the `Animated` API and `PanResponder` to bypass the React bridge.
+  - Strict Material Design aesthetics using **React Native Paper**.
+- **Robust Error Handling & Security**: Graceful error UI handling, strict TypeScript interface validation, safe map-rendering fallbacks, and encrypted device storage for keys.
