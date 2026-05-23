@@ -23,13 +23,30 @@ RoamLite is a high-performance, offline-first travel itinerary manager built nat
    ```bash
    npm install
    ```
-2. **Run the App**
+
+2. **Configure Environment Variables**
+   Create a `.env` file in the root directory. You can copy the template:
+   ```bash
+   # On macOS/Linux:
+   cp .env.example .env
+
+   # On Windows (PowerShell):
+   Copy-Item .env.example .env
+   ```
+   Open the `.env` file and define your Google Maps API Key:
+   ```env
+   GOOGLE_MAPS_API_KEY=YOUR_GOOGLE_MAPS_API_KEY_HERE
+   ```
+   > [!IMPORTANT]
+   > The `GOOGLE_MAPS_API_KEY` is loaded in `app.config.js` via `dotenv` and is necessary for Google Maps components to function correctly on native Android devices.
+
+3. **Run the App**
    ```bash
    npx expo start
    ```
    *Scan the QR code with your phone (Expo Go app) or press `a` / `i` to launch on a local emulator.*
 
-3. **Run Unit Tests**
+4. **Run Unit Tests**
    ```bash
    npm run test
    ```
